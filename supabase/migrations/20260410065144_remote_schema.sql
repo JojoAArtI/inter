@@ -1,0 +1,2 @@
+-- Purpose: historical placeholder migration from the initial Supabase project bootstrap.
+-- Intentionally left empty so later MVP migrations define the real schema in a clean order.
