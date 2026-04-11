@@ -32,9 +32,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.internshipuncle.core.design.InternshipUncleTheme
 
+import androidx.compose.ui.graphics.vector.ImageVector
+
 data class TopLevelDestination(
     val label: String,
-    val route: String
+    val route: String,
+    val icon: ImageVector? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

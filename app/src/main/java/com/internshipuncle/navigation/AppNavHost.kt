@@ -58,12 +58,11 @@ fun InternshipUncleApp() {
     val currentRoute = backStackEntry?.destination?.route
 
     val topLevelDestinations = listOf(
-        TopLevelDestination("Jobs", AppDestination.Jobs.route),
-        TopLevelDestination("Analyze", AppDestination.Analyze.route),
-        TopLevelDestination("Resume", AppDestination.ResumeUpload.createRoute()),
-        TopLevelDestination("Interview", AppDestination.MockInterview.createRoute()),
-        TopLevelDestination("Dashboard", AppDestination.Dashboard.route)
-    )
+        TopLevelDestination("Jobs", AppDestination.Jobs.route, androidx.compose.material.icons.Icons.Outlined.WorkOutline),
+        TopLevelDestination("Analyze", AppDestination.Analyze.route, androidx.compose.material.icons.Icons.Outlined.Analytics),
+        TopLevelDestination("Resume", AppDestination.ResumeUpload.createRoute(), androidx.compose.material.icons.Icons.Outlined.Description),
+        TopLevelDestination("Interview", AppDestination.MockInterview.createRoute(), androidx.compose.material.icons.Icons.Outlined.RecordVoiceOver),
+        TopLevelDestination("Dashboard", AppDestination.Dashboard.route, androidx.compose.material.icons.Icons.Outlined.Home)
 
     val showBottomBar = currentDestination?.hierarchy?.any { destination ->
         topLevelDestinations.any { routeMatches(destination.route, it.route) }

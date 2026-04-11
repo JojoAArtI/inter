@@ -74,6 +74,22 @@ That connected flow is what makes the product strong.
 - `ROADMAP.md` — phased MVP build plan
 - `PROMPTS.md` — exact Codex prompts to scaffold and build features
 
+## Local Setup
+
+The Android app reads Supabase config from the root `local.properties` file, which is ignored by git. Set:
+
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+
+For Supabase Edge Functions, use `supabase/functions/.env.local` with:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_SECRET_KEY`
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL` if you want to override the default model
+
+Use the publishable key in the Android app. Keep the service role key and Gemini key server-side only.
+
 ## Suggested Repo Structure
 
 ```text

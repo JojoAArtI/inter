@@ -37,6 +37,15 @@ object SupabaseModule {
             install(Auth)
             install(Storage)
             install(Functions)
+            
+            @OptIn(io.github.jan.supabase.annotations.SupabaseInternal::class)
+            httpConfig {
+                install(io.ktor.client.plugins.HttpTimeout) {
+                    requestTimeoutMillis = 60000L
+                    connectTimeoutMillis = 60000L
+                    socketTimeoutMillis = 60000L
+                }
+            }
         }
     }
 

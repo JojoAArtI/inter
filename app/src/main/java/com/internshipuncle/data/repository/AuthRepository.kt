@@ -26,10 +26,11 @@ data class AuthSession(
     val isConfigured: Boolean = true,
     val isLoggedIn: Boolean = false,
     val email: String? = null,
-    val profile: UserProfile? = null
+    val profile: UserProfile? = null,
+    val profileBackendReady: Boolean = true
 ) {
     val needsOnboarding: Boolean
-        get() = isLoggedIn && profile?.isComplete != true
+        get() = isLoggedIn && profileBackendReady && profile?.isComplete != true
 }
 
 interface AuthRepository {
@@ -73,17 +74,21 @@ class SupabaseAuthRepository @Inject constructor(
                     is SessionStatus.Authenticated -> {
                         val email = status.session.user?.email
                         val userId = status.session.user?.id
-                        val profile = if (userId != null) {
-                            loadProfile(userId)
+                        val profileState = if (userId != null) {
+                            loadProfileState(userId)
                         } else {
-                            email?.let(::fallbackProfile)
+                            ProfileLoadState(
+                                profile = email?.let(::fallbackProfile),
+                                backendReady = true
+                            )
                         }
                         AuthSession(
                             isRestoring = false,
                             isConfigured = true,
                             isLoggedIn = true,
                             email = email,
-                            profile = profile ?: email?.let(::fallbackProfile)
+                            profile = profileState.profile ?: email?.let(::fallbackProfile),
+                            profileBackendReady = profileState.backendReady
                         )
                     }
 
@@ -145,10 +150,17 @@ class SupabaseAuthRepository @Inject constructor(
             }
             RepositoryStatus.Success
         } catch (error: Exception) {
-            RepositoryStatus.Failure(
-                message = error.message ?: "Unable to create a Supabase Auth user.",
-                cause = error
-            )
+            if (error.isUserAlreadyExists()) {
+                RepositoryStatus.Failure(
+                    message = "An account already exists for this email. Please log in instead.",
+                    cause = error
+                )
+            } else {
+                RepositoryStatus.Failure(
+                    message = error.message ?: "Unable to create a Supabase Auth user.",
+                    cause = error
+                )
+            }
         }
     }
 
@@ -176,7 +188,7 @@ class SupabaseAuthRepository @Inject constructor(
             RepositoryStatus.Success
         } catch (error: Exception) {
             when {
-                error.isProfilesSchemaMissing() -> RepositoryStatus.BackendNotReady
+                error.isProfilesBackendUnavailable() -> RepositoryStatus.BackendNotReady
                 else -> RepositoryStatus.Failure(
                     message = error.message
                         ?: "Unable to save onboarding profile to Supabase.",
@@ -202,11 +214,11 @@ class SupabaseAuthRepository @Inject constructor(
         }
     }
 
-    private suspend fun loadProfile(
+    private suspend fun loadProfileState(
         userId: String
-    ): UserProfile? {
+    ): ProfileLoadState {
         return try {
-            postgrest.from(SupabaseTables.PROFILES)
+            val profile = postgrest.from(SupabaseTables.PROFILES)
                 .select {
                     filter {
                         eq("id", userId)
@@ -215,8 +227,22 @@ class SupabaseAuthRepository @Inject constructor(
                 .decodeList<ProfileDto>()
                 .firstOrNull()
                 ?.toDomainModel()
-        } catch (_: Exception) {
-            null
+            ProfileLoadState(
+                profile = profile,
+                backendReady = true
+            )
+        } catch (error: Exception) {
+            if (error.isProfilesBackendUnavailable()) {
+                ProfileLoadState(
+                    profile = null,
+                    backendReady = false
+                )
+            } else {
+                ProfileLoadState(
+                    profile = null,
+                    backendReady = true
+                )
+            }
         }
     }
 
@@ -233,14 +259,30 @@ class SupabaseAuthRepository @Inject constructor(
         )
     }
 
-    private fun Exception.isProfilesSchemaMissing(): Boolean {
+    private fun Exception.isProfilesBackendUnavailable(): Boolean {
         val message = message.orEmpty()
         return message.contains("profiles", ignoreCase = true) &&
             (
                 message.contains("does not exist", ignoreCase = true) ||
                     message.contains("schema cache", ignoreCase = true) ||
+                    message.contains("row-level security", ignoreCase = true) ||
+                    message.contains("violates row-level security", ignoreCase = true) ||
+                    message.contains("permission denied", ignoreCase = true) ||
                     message.contains("Could not find the table", ignoreCase = true) ||
                     message.contains("PGRST", ignoreCase = true)
                 )
     }
+}
+
+private data class ProfileLoadState(
+    val profile: UserProfile?,
+    val backendReady: Boolean
+)
+
+private fun Exception.isUserAlreadyExists(): Boolean {
+    val message = message.orEmpty()
+
+    return message.contains("user_already_exists", ignoreCase = true) ||
+        message.contains("already registered", ignoreCase = true) ||
+        message.contains("already exists", ignoreCase = true)
 }

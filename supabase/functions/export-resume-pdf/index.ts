@@ -58,7 +58,7 @@ Deno.serve(async (request) => {
       throw new ApiError(400, "invalid_input", "Generated resume JSON is missing.");
     }
 
-    const pdfBytes = createSimpleTextPdf(formatResumeJsonForPdf(resumeJson));
+    const pdfBytes = await createSimpleTextPdf(formatResumeJsonForPdf(resumeJson));
     const storagePath = `${user.id}/${generatedResumeId}.pdf`;
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
 

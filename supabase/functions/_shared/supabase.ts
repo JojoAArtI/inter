@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { requireEnv } from "./env.ts";
+import { getEnv, requireEnv } from "./env.ts";
 
 let adminClient: SupabaseClient | null = null;
 
@@ -8,9 +8,13 @@ export function getSupabaseAdminClient(): SupabaseClient {
     return adminClient;
   }
 
+  const supabaseKey = getEnv("SUPABASE_SERVICE_ROLE_KEY") ??
+    getEnv("SUPABASE_SECRET_KEY") ??
+    requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+
   adminClient = createClient(
     requireEnv("SUPABASE_URL"),
-    requireEnv("SUPABASE_SERVICE_ROLE_KEY"),
+    supabaseKey,
     {
       auth: {
         autoRefreshToken: false,

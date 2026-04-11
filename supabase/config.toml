@@ -242,10 +242,6 @@ verify_jwt = false
 
 [functions.personalized-fit-check]
 verify_jwt = false
-# Number of characters used in the email OTP.
-otp_length = 6
-# Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]

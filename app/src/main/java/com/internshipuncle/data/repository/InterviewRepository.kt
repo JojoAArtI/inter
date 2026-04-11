@@ -301,7 +301,6 @@ class SupabaseInterviewRepository @Inject constructor(
             "schema cache",
             "Could not find the table",
             "PGRST",
-            "function",
             "not found"
         ).any { marker -> message.contains(marker, ignoreCase = true) }
     }

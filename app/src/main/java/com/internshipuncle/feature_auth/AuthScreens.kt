@@ -298,11 +298,13 @@ class SignupViewModel @Inject constructor(
             state.update {
                 it.copy(
                     isSubmitting = false,
-                    errorMessage = result.toAuthErrorMessage(),
-                    infoMessage = if (result is RepositoryStatus.Success) {
-                        "Account created. If email confirmation is enabled in Supabase, verify the inbox before signing in."
-                    } else {
-                        null
+                    errorMessage = if (result.isUserAlreadyExists()) null else result.toAuthErrorMessage(),
+                    infoMessage = when {
+                        result.isUserAlreadyExists() ->
+                            "An account already exists for this email. Please log in instead."
+                        result is RepositoryStatus.Success ->
+                            "Account created. If email confirmation is enabled in Supabase, verify the inbox before signing in."
+                        else -> null
                     }
                 )
             }
@@ -446,6 +448,7 @@ fun SplashScreen(
             "Session restore" to when {
                 session.isRestoring -> "Checking stored session and profile state."
                 session.isLoggedIn && session.needsOnboarding -> "Signed in, but profile onboarding is not complete."
+                session.isLoggedIn && !session.profileBackendReady -> "Signed in. Profile sync is unavailable, so the app will continue without onboarding."
                 session.isLoggedIn -> "Signed in and ready to continue to jobs."
                 session.isConfigured -> "No active session found."
                 else -> "Supabase client config is missing, so auth actions are disabled."
@@ -842,7 +845,7 @@ private fun RepositoryStatus.toAuthErrorMessage(): String? {
         RepositoryStatus.Success -> null
         RepositoryStatus.NotConfigured -> "Supabase client config is missing."
         RepositoryStatus.BackendNotReady -> "The auth backend is not fully ready yet."
-        is RepositoryStatus.Failure -> message
+        is RepositoryStatus.Failure -> message.toFriendlyAuthMessage()
     }
 }
 
@@ -852,6 +855,31 @@ private fun RepositoryStatus.toOnboardingErrorMessage(): String? {
         RepositoryStatus.NotConfigured -> "Supabase client config is missing."
         RepositoryStatus.BackendNotReady -> "The `profiles` table or related RLS setup is not ready yet."
         is RepositoryStatus.Failure -> message
+    }
+}
+
+private fun RepositoryStatus.isUserAlreadyExists(): Boolean {
+    val message = when (this) {
+        is RepositoryStatus.Failure -> message
+        else -> null
+    }.orEmpty()
+
+    return message.contains("user_already_exists", ignoreCase = true) ||
+        message.contains("already registered", ignoreCase = true) ||
+        message.contains("already exists", ignoreCase = true)
+}
+
+private fun String.toFriendlyAuthMessage(): String {
+    return when {
+        contains("invalid login credentials", ignoreCase = true) ->
+            "Incorrect email or password."
+        contains("user_already_exists", ignoreCase = true) ||
+            contains("already registered", ignoreCase = true) ||
+            contains("already exists", ignoreCase = true) ->
+            "An account already exists for this email. Please log in instead."
+        contains("email not confirmed", ignoreCase = true) ->
+            "Please confirm your email before signing in."
+        else -> this
     }
 }
 

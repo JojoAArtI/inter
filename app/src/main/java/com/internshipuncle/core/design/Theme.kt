@@ -11,28 +11,28 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val LightColors = lightColorScheme(
-    primary = AccentBlue,
-    onPrimary = Cloud,
-    secondary = LinkBlue,
-    background = Mist,
-    onBackground = Graphite,
-    surface = Cloud,
-    onSurface = Graphite,
-    surfaceVariant = Mist,
-    onSurfaceVariant = Slate,
+    primary = MutedRoyalBlue,
+    onPrimary = WhiteSurface,
+    secondary = BrightRoyalBlue,
+    background = LightBlueBg,
+    onBackground = DarkNavy,
+    surface = WhiteSurface,
+    onSurface = DarkNavy,
+    surfaceVariant = LightBlueBg,
+    onSurfaceVariant = SoftGray,
     outline = DividerLight
 )
 
 private val DarkColors = darkColorScheme(
-    primary = BrightBlue,
+    primary = BrightRoyalBlue,
     onPrimary = InkBlack,
-    secondary = AccentBlue,
+    secondary = MutedRoyalBlue,
     background = InkBlack,
-    onBackground = Cloud,
+    onBackground = WhiteSurface,
     surface = SurfaceDark,
-    onSurface = Cloud,
+    onSurface = WhiteSurface,
     surfaceVariant = Graphite,
-    onSurfaceVariant = Color(0xFFD2D2D7),
+    onSurfaceVariant = SoftGray,
     outline = DividerDark
 )
 
@@ -40,7 +40,8 @@ private val LocalIsDarkTheme = staticCompositionLocalOf { false }
 
 @Composable
 fun InternshipUncleTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Force light theme so we match the redesign aesthetic perfectly
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
