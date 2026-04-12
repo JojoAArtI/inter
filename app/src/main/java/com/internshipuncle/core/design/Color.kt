@@ -2,51 +2,63 @@ package com.internshipuncle.core.design
 
 import androidx.compose.ui.graphics.Color
 
-// ── Inspiration Image Palette ──────────────────────────────────────────
-// Soft blue background, frosted white cards, royal blue accents, pill-shaped nav
+// ── Fintech Monochrome Palette ─────────────────────────────────────────
+// Inspired by clean fintech dashboard: white canvas, black/gray hierarchy,
+// no blue accents — purely monochrome with semantic status colors only.
 
-// Primary backgrounds inspired by the image's cool, airy blue gradient feel
-val SkyBlueLight = Color(0xFFD6E8F7)       // Top gradient stop (lighter)
-val SkyBlueMedium = Color(0xFFBDD5EE)      // Bottom gradient stop (deeper)
-val FrostWhite = Color(0xFFF5F8FC)          // Cards, elevated surfaces
-val PureWhite = Color(0xFFFFFFFF)           // Pure white for stark contrast
+// ── Canvas & Surfaces ──────────────────────────────────────────────────
+val CanvasWhite   = Color(0xFFFFFFFF)   // Main app background
+val SurfaceGray   = Color(0xFFF5F5F7)   // Cards, sections, input fields
+val SurfaceLight  = Color(0xFFF0F0F3)   // Slightly deeper card bg
+val PureWhite     = Color(0xFFFFFFFF)   // Stark white (alias)
 
-// Blue accents from the inspiration image (active nav, buttons, highlights)
-val RoyalBlue = Color(0xFF2A5FAA)           // Primary interactive blue
-val DeepNavy = Color(0xFF1B3A6B)            // Pressed / dark accent
-val SoftBlue = Color(0xFF5B8FD4)            // Secondary blue, subtle highlights
-val PaleBlue = Color(0xFFE0ECF8)            // Tinted chips, light containers
+// ── Text Hierarchy ─────────────────────────────────────────────────────
+val InkBlack      = Color(0xFF1A1A1A)   // Primary text, filled buttons (near-black)
+val CharcoalDark  = Color(0xFF2C2C2E)   // Dark nav pill, dark accents
+val SlateGray     = Color(0xFF6B6B6B)   // Secondary text, sublabels
+val SilverMist    = Color(0xFFAEAEB2)   // Tertiary, placeholders, disabled
+val DividerGray   = Color(0xFFE5E5EA)   // Subtle horizontal dividers
 
-// Text hierarchy — taken from design.md near-black philosophy
-val InkBlack = Color(0xFF0A0A0F)            // Display headlines
-val Graphite = Color(0xFF1D1D1F)            // Primary body text
-val Slate = Color(0xFF4A4A52)               // Secondary body text
-val CoolGray = Color(0xFF8E95A3)            // Tertiary text, subtitle, placeholders
-val MistGray = Color(0xFFC4C9D4)            // Disabled text, dividers
+// ── Interactive / Buttons ──────────────────────────────────────────────
+val NavPillDark   = Color(0xFF1C1C1E)   // Dark floating bottom nav pill
+val NavIconWhite  = Color(0xFFFFFFFF)   // Icons on dark nav
+val NavSelectedBg = Color(0xFFFFFFFF)   // Selected tab circle on dark nav
+val BtnOutlineStroke = Color(0xFFD1D1D6) // Outlined circular button border
 
-// Semantic
-val SuccessGreen = Color(0xFF34C759)
-val WarningAmber = Color(0xFFFF9500)
-val ErrorRed = Color(0xFFFF3B30)
-val InfoBlue = Color(0xFF007AFF)
+// ── Status / Semantic ──────────────────────────────────────────────────
+val GreenPositive = Color(0xFF34C759)   // Positive trend, success state
+val RedNegative   = Color(0xFFFF3B30)   // Negative trend, error state
+val AmberWarning  = Color(0xFFFF9500)   // Warning state
+val InfoCharcoal  = Color(0xFF3A3A3C)   // Informational on dark background
 
-// Nav bar from inspiration — dark circle for selected, lighter for unselected
-val NavPillDark = Color(0xFF1C1C1E)         // Selected nav item background
-val NavPillLight = Color(0xFFF2F2F7)        // Unselected separator / bg
-val NavSurfaceGlass = Color(0xFFF0F4FA)     // Bottom bar glass surface
+// ── Overlay & Scrim ────────────────────────────────────────────────────
+val ScrimDark     = Color(0x66000000)
+val GlassWhite    = Color(0xCCFFFFFF)
 
-// Overlay & scrim
-val ScrimDark = Color(0x66000000)
-val GlassWhite = Color(0xCCFFFFFF)          // Frosted glass overlay
-
-// Legacy aliases for backward compatibility
-val Cloud = PureWhite
-val DarkNavy = DeepNavy
-val LightBlueBg = SkyBlueLight
-val WhiteSurface = PureWhite
-val MutedRoyalBlue = RoyalBlue
-val BrightRoyalBlue = SoftBlue
-val SoftGray = CoolGray
-val DividerLight = Color(0x14000000)
-val DividerDark = Color(0x1FFFFFFF)
-val SurfaceDark = Color(0xFF272729)
+// ── Legacy compatibility aliases (point at new palette) ────────────────
+val Cloud            = PureWhite
+val DarkNavy         = CharcoalDark
+val LightBlueBg      = SurfaceGray      // was SkyBlueLight
+val WhiteSurface     = PureWhite
+val MutedRoyalBlue   = InkBlack         // was RoyalBlue → now ink
+val BrightRoyalBlue  = SlateGray        // was SoftBlue  → now neutral
+val RoyalBlue        = InkBlack         // Primary interactive = InkBlack
+val DeepNavy         = CharcoalDark
+val SoftBlue         = SlateGray
+val PaleBlue         = SurfaceGray
+val SkyBlueLight     = SurfaceGray
+val SkyBlueMedium    = SurfaceLight
+val FrostWhite       = PureWhite
+val CoolGray         = SlateGray
+val Graphite         = InkBlack
+val MistGray         = DividerGray
+val SoftGray         = SilverMist
+val DividerLight     = DividerGray
+val DividerDark      = Color(0xFF3A3A3C)
+val SurfaceDark      = Color(0xFF272729)
+val SuccessGreen     = GreenPositive
+val WarningAmber     = AmberWarning
+val ErrorRed         = RedNegative
+val InfoBlue         = InfoCharcoal
+val NavPillLight     = SurfaceGray
+val NavSurfaceGlass  = SurfaceGray

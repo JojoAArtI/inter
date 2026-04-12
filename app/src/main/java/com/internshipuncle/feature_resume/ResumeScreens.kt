@@ -1,5 +1,10 @@
 package com.internshipuncle.feature_resume
 
+import com.internshipuncle.core.design.DividerGray
+import com.internshipuncle.core.design.SurfaceGray
+import com.internshipuncle.core.design.SilverMist
+import com.internshipuncle.core.design.SlateGray
+import com.internshipuncle.core.design.CanvasWhite
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -60,11 +65,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.internshipuncle.core.design.CoolGray
-import com.internshipuncle.core.design.DeepNavy
+import com.internshipuncle.core.design.CharcoalDark
 import com.internshipuncle.core.design.InternshipUncleTheme
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
-import com.internshipuncle.core.design.SkyBlueMedium
+import com.internshipuncle.core.design.InkBlack
+import com.internshipuncle.core.design.SurfaceLight
 import com.internshipuncle.core.model.QueryResult
 import com.internshipuncle.core.model.RepositoryStatus
 import com.internshipuncle.data.repository.JobsRepository
@@ -615,10 +620,10 @@ private fun PillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = RoyalBlue,
+            containerColor = InkBlack,
             contentColor = PureWhite,
-            disabledContainerColor = RoyalBlue.copy(alpha = 0.4f),
-            disabledContentColor = PureWhite.copy(alpha = 0.6f)
+            disabledContainerColor = InkBlack.copy(alpha = 0.4f),
+            disabledContentColor = SurfaceGray
         )
     ) {
         if (isLoading) {
@@ -642,7 +647,7 @@ private fun OutlinedPillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp)
     ) {
-        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) RoyalBlue else CoolGray)
+        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) InkBlack else CoolGray)
     }
 }
 
@@ -656,8 +661,8 @@ private fun ResumeNoticeCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = if (isDark) DeepNavy else PureWhite.copy(alpha = 0.9f),
-        shadowElevation = 2.dp
+        color = if (isDark) CharcoalDark else SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -691,7 +696,7 @@ fun ResumeUploadScreen(
             eyebrow = "Resume Lab",
             title = "Loading lab...",
             description = "Fetching your uploaded resumes.",
-            actions = { CircularProgressIndicator(color = RoyalBlue) }
+            actions = { CircularProgressIndicator(color = InkBlack) }
         )
         else -> {
             ResumeLabScaffold(
@@ -754,7 +759,7 @@ fun ResumeRoastScreen(
             eyebrow = "Resume Roast",
             title = "Loading resume...",
             description = "Fetching parsed document.",
-            actions = { CircularProgressIndicator(color = RoyalBlue) }
+            actions = { CircularProgressIndicator(color = InkBlack) }
         )
         else -> {
             ResumeLabScaffold(
@@ -825,7 +830,7 @@ fun ResumeBuilderScreen(
             eyebrow = "Resume Builder",
             title = "Loading builder...",
             description = "Fetching builder state and existing data.",
-            actions = { CircularProgressIndicator(color = RoyalBlue) }
+            actions = { CircularProgressIndicator(color = InkBlack) }
         )
         else -> {
             ResumeLabScaffold(
@@ -918,40 +923,38 @@ private fun ResumeLabScaffold(
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            horizontal = InternshipUncleTheme.spacing.medium,
-            vertical = InternshipUncleTheme.spacing.large
-        ),
-        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.large)
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = eyebrow.uppercase(),
                     style = MaterialTheme.typography.labelMedium,
-                    color = RoyalBlue,
+                    color = SlateGray,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.displaySmall,
+                    color = InkBlack,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SlateGray
                 )
                 targetJobLabel?.let {
                     Surface(
-                        color = SkyBlueMedium.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(12.dp)
+                        color = SurfaceGray,
+                        shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(
                             text = it,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             style = MaterialTheme.typography.labelMedium,
-                            color = RoyalBlue
+                            color = InkBlack
                         )
                     }
                 }
@@ -962,8 +965,8 @@ private fun ResumeLabScaffold(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
-                color = PureWhite.copy(alpha = 0.85f),
-                shadowElevation = 4.dp
+                color = SurfaceGray,
+                shadowElevation = 0.dp
             ) {
                 Column(
                     modifier = Modifier.padding(20.dp),
@@ -973,7 +976,7 @@ private fun ResumeLabScaffold(
                         ResumeNoticeCard(
                             title = if (isError) "Error" else "Info",
                             body = it,
-                            accent = if (isError) MaterialTheme.colorScheme.error else RoyalBlue,
+                            accent = if (isError) MaterialTheme.colorScheme.error else InkBlack,
                             isDark = !isError
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -1016,8 +1019,8 @@ private fun ResumeSummaryCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 2.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1031,7 +1034,7 @@ private fun ResumeSummaryCard(
             Text(
                 text = "Latest score: ${resume.latestScore?.toString() ?: "pending"}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SlateGray
             )
             PillButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -1052,8 +1055,8 @@ private fun StatusPanel(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1062,13 +1065,13 @@ private fun StatusPanel(
             Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             Text(body, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             accent?.let {
-                Text(it, style = MaterialTheme.typography.labelMedium, color = RoyalBlue)
+                Text(it, style = MaterialTheme.typography.labelMedium, color = InkBlack)
             }
             if (showProgress) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    color = RoyalBlue,
-                    trackColor = SkyBlueMedium.copy(alpha = 0.4f)
+                    color = InkBlack,
+                    trackColor = SurfaceLight.copy(alpha = 0.4f)
                 )
             }
         }
@@ -1087,7 +1090,7 @@ private fun SectionHeader(title: String, description: String) {
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = SlateGray
         )
     }
 }
@@ -1100,8 +1103,8 @@ private fun ModeSelector(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 2.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1115,7 +1118,7 @@ private fun ModeSelector(
                         onClick = { onModeSelected(value) },
                         label = { Text(label) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = RoyalBlue,
+                            selectedContainerColor = InkBlack,
                             selectedLabelColor = PureWhite
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -1134,8 +1137,8 @@ private fun ScoreOverviewCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = DeepNavy,
-        shadowElevation = 6.dp
+        color = CharcoalDark,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1152,7 +1155,7 @@ private fun ScoreOverviewCard(
                 Text(
                     text = "/100 overall",
                     style = MaterialTheme.typography.titleMedium,
-                    color = PureWhite.copy(alpha = 0.6f),
+                    color = SurfaceGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
@@ -1170,7 +1173,7 @@ private fun ScoreRow(label: String, score: Int) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text(label, style = MaterialTheme.typography.bodyLarge, color = PureWhite)
-            Text("$score", style = MaterialTheme.typography.titleMedium, color = SkyBlueMedium)
+            Text("$score", style = MaterialTheme.typography.titleMedium, color = SurfaceLight)
         }
         HorizontalDivider(color = PureWhite.copy(alpha = 0.1f))
     }
@@ -1185,8 +1188,8 @@ private fun RoastResultSection(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1195,11 +1198,11 @@ private fun RoastResultSection(
             Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             items.forEach { item ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("•", color = RoyalBlue)
+                    Text("•", color = InkBlack)
                     Text(
                         text = item,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = SlateGray
                     )
                 }
             }
@@ -1214,7 +1217,7 @@ private fun RoastIssuesSection(items: List<ResumeRoastIssue>) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
-        shadowElevation = 2.dp
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1243,8 +1246,8 @@ private fun SourceResumePicker(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 2.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1258,7 +1261,7 @@ private fun SourceResumePicker(
                         onClick = { onSelect(resume.id) },
                         label = { Text(resume.fileName ?: "Resume") },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = RoyalBlue,
+                            selectedContainerColor = InkBlack,
                             selectedLabelColor = PureWhite
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -1312,7 +1315,7 @@ private fun EditableTextListSection(
                     onValueChange = { onChange(item.id, it) }
                 )
                 IconButton(onClick = { onDelete(item.id) }) {
-                    Text("×", style = MaterialTheme.typography.headlineMedium, color = CoolGray)
+                    Text("×", style = MaterialTheme.typography.headlineMedium, color = SlateGray)
                 }
             }
         }
@@ -1347,7 +1350,7 @@ private fun EditableEducationSection(
                     }
                 }
                 TextButton(onClick = { onDelete(item.id) }) { Text("− Remove education entry", color = MaterialTheme.colorScheme.error) }
-                HorizontalDivider(color = CoolGray.copy(alpha = 0.2f))
+                HorizontalDivider(color = SlateGray.copy(alpha = 0.2f))
             }
         }
     }
@@ -1373,7 +1376,7 @@ private fun EditableProjectSection(
                     onChange(item.id) { it.copy(highlights = value) }
                 }
                 TextButton(onClick = { onDelete(item.id) }) { Text("− Remove project", color = MaterialTheme.colorScheme.error) }
-                HorizontalDivider(color = CoolGray.copy(alpha = 0.2f))
+                HorizontalDivider(color = SlateGray.copy(alpha = 0.2f))
             }
         }
     }
@@ -1407,7 +1410,7 @@ private fun EditableExperienceSection(
                     onChange(item.id) { it.copy(bullets = value) }
                 }
                 TextButton(onClick = { onDelete(item.id) }) { Text("− Remove experience", color = MaterialTheme.colorScheme.error) }
-                HorizontalDivider(color = CoolGray.copy(alpha = 0.2f))
+                HorizontalDivider(color = SlateGray.copy(alpha = 0.2f))
             }
         }
     }
@@ -1423,8 +1426,8 @@ private fun EditorSectionContainer(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1453,21 +1456,21 @@ private fun GeneratedResumePreview(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = SkyBlueMedium.copy(alpha = 0.1f),
-        border = BorderStroke(1.dp, RoyalBlue.copy(alpha = 0.3f)),
-        shadowElevation = 2.dp
+        color = SurfaceLight.copy(alpha = 0.1f),
+        border = BorderStroke(1.dp, InkBlack.copy(alpha = 0.3f)),
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Generated output", style = MaterialTheme.typography.titleLarge, color = DeepNavy)
+            Text("Generated output", style = MaterialTheme.typography.titleLarge, color = CharcoalDark)
             Text("Engine: ${generated.templateName}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (pdfUrl != null) {
                 ResumeNoticeCard(
                     title = "PDF Exported successfully",
                     body = "Ready to download or print.",
-                    accent = RoyalBlue,
+                    accent = InkBlack,
                     isDark = true
                 )
                 PillButton(
@@ -1520,7 +1523,7 @@ private fun openExternalUrl(context: Context, url: String) {
 private fun ResumePreviewSection(title: String, items: List<String>) {
     if (items.isEmpty()) return
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(title, style = MaterialTheme.typography.titleMedium, color = RoyalBlue)
+        Text(title, style = MaterialTheme.typography.titleMedium, color = InkBlack)
         items.forEach { item ->
             Text(
                 text = "• $item",

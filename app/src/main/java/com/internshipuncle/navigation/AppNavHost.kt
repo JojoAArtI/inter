@@ -8,9 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.WorkOutline
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Article
+import androidx.compose.material.icons.outlined.MicNone
+import androidx.compose.material.icons.outlined.BusinessCenter
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,11 +68,11 @@ fun InternshipUncleApp() {
     val currentRoute = backStackEntry?.destination?.route
 
     val topLevelDestinations = listOf(
-        TopLevelDestination("Jobs", AppDestination.Jobs.route, Icons.Outlined.WorkOutline),
-        TopLevelDestination("Analyze", AppDestination.Analyze.route, Icons.Outlined.Analytics),
-        TopLevelDestination("Resume", AppDestination.ResumeUpload.createRoute(), Icons.Outlined.Description),
-        TopLevelDestination("Interview", AppDestination.MockInterview.createRoute(), Icons.Outlined.RecordVoiceOver),
-        TopLevelDestination("Dashboard", AppDestination.Dashboard.route, Icons.Outlined.Home)
+        TopLevelDestination("Home",      AppDestination.Dashboard.route,               Icons.Outlined.Home),
+        TopLevelDestination("Jobs",      AppDestination.Jobs.route,                    Icons.Outlined.BusinessCenter),
+        TopLevelDestination("Resume",    AppDestination.ResumeUpload.createRoute(),    Icons.Outlined.Article),
+        TopLevelDestination("Interview", AppDestination.MockInterview.createRoute(),   Icons.Outlined.MicNone),
+        TopLevelDestination("Analyze",   AppDestination.Analyze.route,                 Icons.Outlined.GridView)
     )
 
     val showBottomBar = currentDestination?.hierarchy?.any { destination ->
@@ -366,7 +370,7 @@ private fun resolveAuthRoute(
         currentRoute == AppDestination.Splash.route ||
             currentRoute == AppDestination.Login.route ||
             currentRoute == AppDestination.Signup.route ||
-            currentRoute == AppDestination.Onboarding.route -> AppDestination.Jobs.route
+            currentRoute == AppDestination.Onboarding.route -> AppDestination.Dashboard.route
 
         else -> null
     }

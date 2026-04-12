@@ -2,7 +2,7 @@ package com.internshipuncle.core.ui
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,20 +14,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -39,30 +34,35 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.internshipuncle.core.design.CoolGray
-import com.internshipuncle.core.design.DeepNavy
-import com.internshipuncle.core.design.FrostWhite
+import com.internshipuncle.core.design.CanvasWhite
+import com.internshipuncle.core.design.CharcoalDark
+import com.internshipuncle.core.design.DividerGray
+import com.internshipuncle.core.design.InkBlack
 import com.internshipuncle.core.design.InternshipUncleTheme
 import com.internshipuncle.core.design.NavPillDark
-import com.internshipuncle.core.design.PaleBlue
+import com.internshipuncle.core.design.NavIconWhite
+import com.internshipuncle.core.design.NavSelectedBg
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
-import com.internshipuncle.core.design.SkyBlueLight
-import com.internshipuncle.core.design.SkyBlueMedium
+import com.internshipuncle.core.design.SlateGray
+import com.internshipuncle.core.design.SurfaceGray
+import com.internshipuncle.core.design.ErrorRed
 
 data class TopLevelDestination(
     val label: String,
     val route: String,
     val icon: ImageVector? = null
 )
+
+// ── App Shell ─────────────────────────────────────────────────────────
+// Pure white canvas + dark floating pill nav bar (fintech style)
 
 @Composable
 fun AppShell(
@@ -76,22 +76,18 @@ fun AppShell(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(SkyBlueLight, SkyBlueMedium)
-                )
-            )
+            .background(CanvasWhite)   // Flat pure white — no gradients
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier       = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentColor   = MaterialTheme.colorScheme.onBackground,
             topBar = {},
             bottomBar = {
                 if (showBottomBar) {
                     AppBottomBar(
-                        destinations = destinations,
-                        selectedRoute = selectedRoute,
+                        destinations         = destinations,
+                        selectedRoute        = selectedRoute,
                         onDestinationSelected = onDestinationSelected
                     )
                 }
@@ -100,6 +96,10 @@ fun AppShell(
         )
     }
 }
+
+// ── Dark Floating Pill Nav Bar ─────────────────────────────────────────
+// Dark (#1C1C1E) capsule, floating above the white canvas.
+// Selected tab = white filled circle; unselected = white icon, no bg.
 
 @Composable
 private fun AppBottomBar(
@@ -110,28 +110,29 @@ private fun AppBottomBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 20.dp)
+            .padding(horizontal = 28.dp, vertical = 16.dp)
             .windowInsetsPadding(WindowInsets.navigationBars),
         contentAlignment = Alignment.BottomCenter
     ) {
         Surface(
-            shape = RoundedCornerShape(32.dp),
-            color = PureWhite.copy(alpha = 0.90f),
-            shadowElevation = 8.dp,
+            shape          = RoundedCornerShape(40.dp),
+            color          = NavPillDark,
+            shadowElevation = 20.dp,
             tonalElevation = 0.dp
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment     = Alignment.CenterVertically
             ) {
                 destinations.forEach { destination ->
                     val isSelected = destination.route == selectedRoute
                     AppNavItem(
-                        icon = destination.icon,
+                        icon       = destination.icon,
+                        label      = destination.label,
                         isSelected = isSelected,
-                        onClick = { onDestinationSelected(destination.route) }
+                        onClick    = { onDestinationSelected(destination.route) }
                     )
                 }
             }
@@ -142,38 +143,45 @@ private fun AppBottomBar(
 @Composable
 private fun AppNavItem(
     icon: ImageVector?,
+    label: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
     val bgColor by animateColorAsState(
-        targetValue = if (isSelected) RoyalBlue else Color.Transparent,
+        targetValue   = if (isSelected) NavSelectedBg else Color.Transparent,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "navItemBg"
+        label         = "navBg"
     )
-    val contentColor by animateColorAsState(
-        targetValue = if (isSelected) PureWhite else CoolGray,
+    val iconTint by animateColorAsState(
+        targetValue   = if (isSelected) NavPillDark else NavIconWhite.copy(alpha = 0.7f),
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "navItemContent"
+        label         = "navTint"
+    )
+    val scale by animateFloatAsState(
+        targetValue   = if (isSelected) 1.08f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label         = "navScale"
     )
 
     Box(
         modifier = Modifier
+            .scale(scale)
             .size(48.dp)
             .clip(CircleShape)
             .clickable(
-                indication = null,
+                indication       = null,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = onClick
+                onClick          = onClick
             )
             .background(bgColor, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (icon != null) {
             Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp),
-                tint = contentColor
+                imageVector    = icon,
+                contentDescription = label,
+                modifier       = Modifier.size(22.dp),
+                tint           = iconTint
             )
         }
     }
@@ -193,60 +201,66 @@ fun PlaceholderScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = InternshipUncleTheme.spacing.medium, vertical = InternshipUncleTheme.spacing.large),
-        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.mediumLarge)
+            .background(CanvasWhite)
+            .padding(
+                horizontal = InternshipUncleTheme.spacing.medium,
+                vertical   = InternshipUncleTheme.spacing.large
+            ),
+        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
     ) {
-        // Hero card
+        // ── Hero card
         Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            color = PureWhite.copy(alpha = 0.85f),
-            shadowElevation = 4.dp
+            modifier       = Modifier.fillMaxWidth(),
+            shape          = RoundedCornerShape(20.dp),
+            color          = SurfaceGray,
+            shadowElevation = 0.dp
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier            = Modifier.padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = eyebrow.uppercase(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = RoyalBlue,
+                    text  = eyebrow.uppercase(),
+                    style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+                    color = SlateGray,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = title,
+                    text  = title,
                     style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.SemiBold
+                    color = InkBlack
                 )
                 Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text  = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SlateGray
                 )
             }
         }
 
+        // ── Section cards
         if (sections.isNotEmpty()) {
             sections.forEach { (sectionTitle, sectionBody) ->
                 Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(18.dp),
-                    color = PureWhite.copy(alpha = 0.8f),
-                    shadowElevation = 2.dp
+                    modifier       = Modifier.fillMaxWidth(),
+                    shape          = RoundedCornerShape(16.dp),
+                    color          = SurfaceGray,
+                    shadowElevation = 0.dp
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier            = Modifier.padding(20.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
-                            text = sectionTitle,
+                            text  = sectionTitle,
                             style = MaterialTheme.typography.titleMedium,
+                            color = InkBlack,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = sectionBody,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text     = sectionBody,
+                            style    = MaterialTheme.typography.bodyMedium,
+                            color    = SlateGray,
                             overflow = TextOverflow.Clip
                         )
                     }

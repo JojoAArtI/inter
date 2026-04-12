@@ -1,5 +1,10 @@
 package com.internshipuncle.feature_interview
 
+import com.internshipuncle.core.design.DividerGray
+import com.internshipuncle.core.design.SurfaceGray
+import com.internshipuncle.core.design.SilverMist
+import com.internshipuncle.core.design.SlateGray
+import com.internshipuncle.core.design.CanvasWhite
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,11 +48,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.internshipuncle.core.design.CoolGray
-import com.internshipuncle.core.design.DeepNavy
+import com.internshipuncle.core.design.CharcoalDark
 import com.internshipuncle.core.design.InternshipUncleTheme
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
-import com.internshipuncle.core.design.SkyBlueMedium
+import com.internshipuncle.core.design.InkBlack
+import com.internshipuncle.core.design.SurfaceLight
 import com.internshipuncle.core.model.QueryResult
 import com.internshipuncle.core.ui.PlaceholderScreen
 import com.internshipuncle.data.repository.InterviewRepository
@@ -554,10 +559,10 @@ private fun PillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = RoyalBlue,
+            containerColor = InkBlack,
             contentColor = PureWhite,
-            disabledContainerColor = RoyalBlue.copy(alpha = 0.4f),
-            disabledContentColor = PureWhite.copy(alpha = 0.6f)
+            disabledContainerColor = InkBlack.copy(alpha = 0.4f),
+            disabledContentColor = SurfaceGray
         )
     ) {
         if (isLoading) {
@@ -581,7 +586,7 @@ private fun OutlinedPillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp)
     ) {
-        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) RoyalBlue else CoolGray)
+        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) InkBlack else CoolGray)
     }
 }
 
@@ -628,18 +633,19 @@ fun MockInterviewSetupScreen(
                 Text(
                     text = "MOCK INTERVIEW",
                     style = MaterialTheme.typography.labelMedium,
-                    color = RoyalBlue,
+                    color = SlateGray,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = "Practice lab",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.SemiBold
+                    style = MaterialTheme.typography.displaySmall,
+                    color = InkBlack,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Simulate realistic interview scenarios based on the roles you target.",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = SlateGray
                 )
             }
 
@@ -656,7 +662,7 @@ fun MockInterviewSetupScreen(
                 InterviewNoticeCard(
                     title = "Generating...",
                     body = message,
-                    accent = RoyalBlue,
+                    accent = InkBlack,
                     isDark = true
                 )
             }
@@ -685,7 +691,7 @@ fun MockInterviewSetupScreen(
                         "You don't have a resume uploaded. Add one later to get crossfire questions."
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = SlateGray
                 )
             }
 
@@ -697,7 +703,7 @@ fun MockInterviewSetupScreen(
                     Text(
                         text = "No saved roles available. You can continue with manual text entry above.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = SlateGray
                     )
                 } else {
                     JobChoiceRow(
@@ -735,7 +741,7 @@ fun MockInterviewSetupScreen(
                         Text(
                             text = "Reference your resume in questions.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = SlateGray
                         )
                     }
                     Switch(
@@ -744,7 +750,7 @@ fun MockInterviewSetupScreen(
                         enabled = uiState.hasResume,
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = PureWhite,
-                            checkedTrackColor = RoyalBlue
+                            checkedTrackColor = InkBlack
                         )
                     )
                 }
@@ -865,7 +871,7 @@ fun MockInterviewSessionScreen(
                     InterviewNoticeCard(
                         title = "AI Update",
                         body = message,
-                        accent = RoyalBlue,
+                        accent = InkBlack,
                         isDark = true
                     )
                 }
@@ -905,28 +911,32 @@ fun MockInterviewSummaryScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = InternshipUncleTheme.spacing.medium)
+                    .padding(horizontal = 20.dp)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Spacer(modifier = Modifier.height(InternshipUncleTheme.spacing.large))
-                Text(
-                    text = "POST-MOCK DEBRIEF",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = RoyalBlue,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "Session Summary",
-                    style = MaterialTheme.typography.displayLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "Review your macro performance and find out exactly what to polish.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                // Fintech debrief header
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "POST-MOCK DEBRIEF",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = SlateGray,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Session Summary",
+                        style = MaterialTheme.typography.displaySmall,
+                        color = InkBlack,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Review your performance and what to polish.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = SlateGray
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
 
                 SummaryHeroCard(session = session, summary = summary, skippedCount = uiState.skippedCount)
                 summary?.let {
@@ -977,7 +987,7 @@ private fun MockInterviewStateScreen(
         description = description,
         actions = {
             if (showProgress) {
-                CircularProgressIndicator(color = RoyalBlue)
+                CircularProgressIndicator(color = InkBlack)
             }
             if (actionLabel != null && onAction != null) {
                 PillButton(
@@ -1006,8 +1016,8 @@ private fun SetupCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 4.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1029,27 +1039,27 @@ private fun InterviewNoticeCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = if (isDark) DeepNavy else PureWhite.copy(alpha = 0.9f),
-        shadowElevation = 2.dp
+        color = if (isDark) CharcoalDark else SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(title, style = MaterialTheme.typography.titleMedium, color = if (isDark) PureWhite else accent)
-            Text(body, style = MaterialTheme.typography.bodyMedium, color = if (isDark) PureWhite.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, color = if (isDark) PureWhite else accent)
+            Text(body, style = MaterialTheme.typography.bodyMedium, color = if (isDark) PureWhite.copy(alpha = 0.8f) else SlateGray)
         }
     }
 }
 
 @Composable
 private fun SectionTitle(title: String, subtitle: String) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(text = title, style = MaterialTheme.typography.titleLarge)
+    Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Text(
             text = subtitle,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodySmall,
+            color = SlateGray
         )
     }
 }
@@ -1058,17 +1068,17 @@ private fun SectionTitle(title: String, subtitle: String) {
 private fun SelectedJobCard(title: String, company: String?) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        color = SkyBlueMedium.copy(alpha = 0.2f)
+        shape = RoundedCornerShape(14.dp),
+        color = SurfaceGray
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            Text("Selected Target", style = MaterialTheme.typography.labelMedium, color = RoyalBlue)
-            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text("Target role", style = MaterialTheme.typography.labelSmall, color = SlateGray)
+            Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, color = InkBlack)
             if (!company.isNullOrBlank()) {
-                Text(company, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(company, style = MaterialTheme.typography.bodySmall, color = SlateGray)
             }
         }
     }
@@ -1083,7 +1093,7 @@ private fun JobChoiceRow(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TextButton(onClick = onClearSelection, modifier = Modifier.padding(0.dp)) {
-            Text("Clear selection", color = RoyalBlue)
+            Text("Clear selection", color = InkBlack)
         }
         jobs.chunked(2).forEach { rowJobs ->
             Row(
@@ -1102,7 +1112,7 @@ private fun JobChoiceRow(
                             )
                         },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = RoyalBlue,
+                            selectedContainerColor = InkBlack,
                             selectedLabelColor = PureWhite
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -1133,7 +1143,7 @@ private fun ChoiceSection(
                         onClick = { onSelected(value) },
                         label = { Text(value.replaceFirstChar(Char::uppercase)) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = RoyalBlue,
+                            selectedContainerColor = InkBlack,
                             selectedLabelColor = PureWhite
                         ),
                         shape = RoundedCornerShape(16.dp)
@@ -1152,8 +1162,8 @@ private fun QuestionCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 5.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1162,7 +1172,7 @@ private fun QuestionCard(
             Text(
                 text = "QUESTION ${currentIndex + 1}",
                 style = MaterialTheme.typography.labelMedium,
-                color = RoyalBlue,
+                color = InkBlack,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
@@ -1171,14 +1181,14 @@ private fun QuestionCard(
             )
             question.category?.let { category ->
                 Surface(
-                    color = SkyBlueMedium.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(12.dp)
+                    color = SurfaceGray,
+                    shape = RoundedCornerShape(10.dp)
                 ) {
                     Text(
                         text = category,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = RoyalBlue
+                        color = SlateGray
                     )
                 }
             }
@@ -1186,11 +1196,11 @@ private fun QuestionCard(
                 Text(
                     text = "Expected concepts",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = SlateGray
                 )
                 question.expectedPoints.forEach { point ->
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("•", color = RoyalBlue)
+                        Text("•", color = InkBlack)
                         Text(point, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
@@ -1216,8 +1226,8 @@ private fun AnswerCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1269,8 +1279,8 @@ private fun EvaluationCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = DeepNavy,
-        shadowElevation = 6.dp
+        color = CharcoalDark,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1282,9 +1292,9 @@ private fun EvaluationCard(
                     text = "${evaluation.score}",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
-                    color = SkyBlueMedium
+                    color = SurfaceLight
                 )
-                Text("/100", style = MaterialTheme.typography.titleMedium, color = PureWhite.copy(alpha = 0.6f), modifier = Modifier.padding(bottom = 6.dp))
+                Text("/100", style = MaterialTheme.typography.titleMedium, color = SurfaceGray, modifier = Modifier.padding(bottom = 6.dp))
             }
 
             evaluation.feedback.strengths.takeIf { it.isNotEmpty() }?.let {
@@ -1300,7 +1310,7 @@ private fun EvaluationCard(
                 Text(
                     text = "Follow-up: $followUp",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = SkyBlueMedium.copy(alpha = 0.9f)
+                    color = SurfaceLight.copy(alpha = 0.9f)
                 )
             }
             evaluation.improvedAnswer?.let { improved ->
@@ -1315,13 +1325,13 @@ private fun SavedAnswerCard(answer: MockInterviewAnswerEvaluation) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = SkyBlueMedium.copy(alpha = 0.15f)
+        color = SurfaceLight.copy(alpha = 0.15f)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Logged answer", style = MaterialTheme.typography.labelMedium, color = RoyalBlue)
+            Text("Logged answer", style = MaterialTheme.typography.labelMedium, color = InkBlack)
             Text(answer.answerText, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -1337,7 +1347,7 @@ private fun FeedbackListCard(
         Text(title, style = MaterialTheme.typography.titleMedium, color = if (isDark) PureWhite else MaterialTheme.colorScheme.onSurface)
         values.forEach { value ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("•", color = if (isDark) SkyBlueMedium else RoyalBlue)
+                Text("•", color = if (isDark) SurfaceLight else InkBlack)
                 Text(value, style = MaterialTheme.typography.bodyMedium, color = if (isDark) PureWhite.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -1370,8 +1380,8 @@ private fun SessionHeaderCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 2.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1387,18 +1397,18 @@ private fun SessionHeaderCard(
                     session?.mode?.replace('_', ' ')
                 ).joinToString(" - "),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SlateGray
             )
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Progress", style = MaterialTheme.typography.labelSmall, color = CoolGray)
-                    Text(progressLabel, style = MaterialTheme.typography.labelSmall, color = RoyalBlue, fontWeight = FontWeight.SemiBold)
+                    Text("Progress", style = MaterialTheme.typography.labelSmall, color = SlateGray)
+                    Text(progressLabel, style = MaterialTheme.typography.labelSmall, color = InkBlack, fontWeight = FontWeight.SemiBold)
                 }
                 LinearProgressIndicator(
                     progress = progressFraction,
                     modifier = Modifier.fillMaxWidth(),
-                    color = RoyalBlue,
-                    trackColor = SkyBlueMedium.copy(alpha = 0.4f)
+                    color = InkBlack,
+                    trackColor = SurfaceLight.copy(alpha = 0.4f)
                 )
             }
         }
@@ -1415,8 +1425,8 @@ private fun CompletionPreviewCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = DeepNavy,
-        shadowElevation = 6.dp
+        color = CharcoalDark,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(24.dp),
@@ -1443,14 +1453,14 @@ private fun SummaryHeroCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        color = DeepNavy,
-        shadowElevation = 8.dp
+        color = CharcoalDark,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(28.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("EVALUATION", style = MaterialTheme.typography.labelMedium, color = PureWhite.copy(alpha = 0.6f))
+            Text("EVALUATION", style = MaterialTheme.typography.labelMedium, color = SurfaceGray)
             Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
                     text = summary?.overallScore?.toString() ?: "--",
@@ -1461,7 +1471,7 @@ private fun SummaryHeroCard(
                 Text(
                     text = "/100",
                     style = MaterialTheme.typography.titleLarge,
-                    color = PureWhite.copy(alpha = 0.6f),
+                    color = SurfaceGray,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
@@ -1486,8 +1496,8 @@ private fun SummaryInsightCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 4.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1506,8 +1516,8 @@ private fun SummarySuggestionsCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 4.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -1516,7 +1526,7 @@ private fun SummarySuggestionsCard(
             Text("Targeted adjustments", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             suggestions.forEach { suggestion ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("•", color = RoyalBlue)
+                    Text("•", color = InkBlack)
                     Text(suggestion, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
@@ -1531,7 +1541,7 @@ private fun SessionMetadataCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.6f)
+        color = SurfaceGray
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1541,7 +1551,7 @@ private fun SessionMetadataCard(
             Text(
                 text = "${session.roleName} — ${session.difficulty} — ${session.mode} — ${session.answeredCount}/${session.totalQuestions} answered",
                 style = MaterialTheme.typography.bodySmall,
-                color = CoolGray
+                color = SlateGray
             )
         }
     }
@@ -1552,8 +1562,8 @@ private fun RecentSessionCard(session: InterviewSessionSummary) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 2.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -1564,13 +1574,13 @@ private fun RecentSessionCard(session: InterviewSessionSummary) {
                 Text(
                     text = "${session.mode?.replace('_', ' ')}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = SlateGray
                 )
                 session.overallScore?.let {
                     Text(
                         text = "Score: $it",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = RoyalBlue,
+                        color = InkBlack,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

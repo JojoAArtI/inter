@@ -1,7 +1,10 @@
 package com.internshipuncle.feature_analyze
 
+import com.internshipuncle.core.design.SurfaceGray
+import com.internshipuncle.core.design.SlateGray
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,16 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.internshipuncle.core.design.DeepNavy
-import com.internshipuncle.core.design.InternshipUncleTheme
+import com.internshipuncle.core.design.CharcoalDark
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
-import com.internshipuncle.core.design.SkyBlueMedium
+import com.internshipuncle.core.design.InkBlack
 import com.internshipuncle.core.model.QueryResult
 import com.internshipuncle.core.ui.PlaceholderScreen
 import com.internshipuncle.data.repository.JobsRepository
@@ -135,41 +136,58 @@ private fun AnalysisContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = InternshipUncleTheme.spacing.medium)
+            .padding(horizontal = 20.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.large)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        // ── Fintech page header ────────────────────────────────
         Column(
-            modifier = Modifier.padding(top = InternshipUncleTheme.spacing.large),
-            verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+            modifier = Modifier.padding(top = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = "ROLE INTELLIGENCE",
                 style = MaterialTheme.typography.labelMedium,
-                color = RoyalBlue,
-                fontWeight = FontWeight.SemiBold
+                color = SlateGray,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.sp
             )
             Text(
                 text = job.title,
-                style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.SemiBold
+                style = MaterialTheme.typography.displaySmall,
+                color = InkBlack,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = listOfNotNull(
                     job.company,
                     job.location?.takeIf(String::isNotBlank),
-                    job.workMode?.takeIf(String::isNotBlank),
-                    job.employmentType?.takeIf(String::isNotBlank)
-                ).joinToString(" | "),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                    job.workMode?.takeIf(String::isNotBlank)
+                ).joinToString("  ·  "),
+                style = MaterialTheme.typography.bodyMedium,
+                color = SlateGray
             )
             if (job.tags.isNotEmpty()) {
-                Text(
-                    text = job.tags.joinToString(" | "),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    job.tags.take(5).forEach { tag ->
+                        Surface(
+                            color = SurfaceGray,
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text(
+                                text = tag,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = SlateGray
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -183,33 +201,17 @@ private fun AnalysisContent(
             AnalysisSectionCard(title = "Role Reality", body = analysis.roleReality)
 
             if (analysis.requiredSkills.isNotEmpty()) {
-                AnalysisListCard(
-                    title = "Required Skills",
-                    values = analysis.requiredSkills
-                )
+                AnalysisListCard(title = "Required Skills", values = analysis.requiredSkills)
             }
-
             if (analysis.preferredSkills.isNotEmpty()) {
-                AnalysisListCard(
-                    title = "Preferred Skills",
-                    values = analysis.preferredSkills
-                )
+                AnalysisListCard(title = "Preferred Skills", values = analysis.preferredSkills)
             }
-
             if (analysis.topKeywords.isNotEmpty()) {
-                AnalysisListCard(
-                    title = "Top Keywords",
-                    values = analysis.topKeywords
-                )
+                AnalysisListCard(title = "Top Keywords", values = analysis.topKeywords)
             }
-
             if (analysis.likelyInterviewTopics.isNotEmpty()) {
-                AnalysisListCard(
-                    title = "Likely Interview Topics",
-                    values = analysis.likelyInterviewTopics
-                )
+                AnalysisListCard(title = "Likely Interview Topics", values = analysis.likelyInterviewTopics)
             }
-
             analysis.difficulty?.takeIf(String::isNotBlank)?.let { difficulty ->
                 AnalysisSectionCard(
                     title = "Difficulty",
@@ -219,10 +221,7 @@ private fun AnalysisContent(
         }
 
         message?.let {
-            AnalysisNoticeCard(
-                title = "Backend Note",
-                body = it
-            )
+            AnalysisNoticeCard(title = "Backend Note", body = it)
         }
 
         Spacer(modifier = Modifier.height(96.dp))
@@ -239,8 +238,8 @@ private fun AnalysisSectionCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -254,7 +253,7 @@ private fun AnalysisSectionCard(
             Text(
                 text = body,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SlateGray
             )
         }
     }
@@ -268,8 +267,8 @@ private fun AnalysisListCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -288,12 +287,12 @@ private fun AnalysisListCard(
                     Text(
                         text = "•",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = RoyalBlue
+                        color = InkBlack
                     )
                     Text(
                         text = value,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = SlateGray
                     )
                 }
             }
@@ -309,8 +308,8 @@ private fun AnalysisNoticeCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = DeepNavy,
-        shadowElevation = 4.dp
+        color = CharcoalDark,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -345,7 +344,7 @@ private fun AnalysisStateScreen(
         description = description,
         actions = {
             if (showProgress) {
-                CircularProgressIndicator(color = RoyalBlue)
+                CircularProgressIndicator(color = InkBlack)
             }
             if (actionLabel != null && onAction != null) {
                 Button(
@@ -353,7 +352,7 @@ private fun AnalysisStateScreen(
                     modifier = Modifier.fillMaxWidth().height(52.dp),
                     shape = RoundedCornerShape(26.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = RoyalBlue,
+                        containerColor = InkBlack,
                         contentColor = PureWhite
                     )
                 ) {

@@ -1,5 +1,15 @@
 package com.internshipuncle.feature_jobs
 
+import com.internshipuncle.core.design.DividerGray
+import com.internshipuncle.core.design.SilverMist
+import com.internshipuncle.core.design.SlateGray
+import com.internshipuncle.core.design.CanvasWhite
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.unit.sp
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.clickable
@@ -41,12 +51,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.internshipuncle.core.design.CoolGray
-import com.internshipuncle.core.design.DeepNavy
+import com.internshipuncle.core.design.CharcoalDark
 import com.internshipuncle.core.design.InternshipUncleTheme
-import com.internshipuncle.core.design.PaleBlue
+import com.internshipuncle.core.design.SurfaceGray
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
-import com.internshipuncle.core.design.SkyBlueLight
+import com.internshipuncle.core.design.InkBlack
 import com.internshipuncle.core.model.QueryResult
 import com.internshipuncle.core.model.RepositoryStatus
 import com.internshipuncle.core.ui.PlaceholderScreen
@@ -252,12 +261,14 @@ fun JobsScreen(
         }
         else -> {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.section)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CanvasWhite),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
+                // ── Page header (fintech dashboard pattern)
                 item {
-                    Spacer(modifier = Modifier.height(InternshipUncleTheme.spacing.small))
-                    JobsHero(
+                    JobsPageHeader(
                         savedJobsCount = uiState.savedJobsCount,
                         onOpenSavedJobs = onOpenSavedJobs
                     )
@@ -265,50 +276,64 @@ fun JobsScreen(
 
                 if (uiState.featuredJobs.isNotEmpty()) {
                     item {
-                        JobsSectionHeader(
-                            title = "Featured Roles",
-                            description = "A tighter shortlist for roles worth deeper prep."
+                        Spacer(Modifier.height(24.dp))
+                        FintechSectionHeader(
+                            title = "Featured roles",
+                            action = "View all"
                         )
-                    }
-                    item {
+                        Spacer(Modifier.height(14.dp))
                         LazyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp)
                         ) {
-                            item { Spacer(modifier = Modifier.width(8.dp)) }
                             items(uiState.featuredJobs) { job ->
                                 FeaturedJobCard(
                                     job = job,
                                     onClick = { onOpenJob(job.id) }
                                 )
                             }
-                            item { Spacer(modifier = Modifier.width(8.dp)) }
                         }
                     }
                 }
 
                 if (uiState.latestJobs.isNotEmpty()) {
                     item {
-                        JobsSectionHeader(
-                            title = "Latest Openings",
-                            description = "Freshly active roles, ordered by recency."
+                        Spacer(Modifier.height(28.dp))
+                        FintechSectionHeader(
+                            title = "Latest openings",
+                            action = null
                         )
-                    }
-                    item {
-                        Column(verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)) {
-                            uiState.latestJobs.forEach { job ->
-                                JobListCard(
-                                    job = job,
-                                    onClick = { onOpenJob(job.id) }
-                                )
+                        Spacer(Modifier.height(14.dp))
+                        // Transaction-list style inside a card
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                            shape = RoundedCornerShape(18.dp),
+                            color = SurfaceGray,
+                            shadowElevation = 0.dp
+                        ) {
+                            Column {
+                                uiState.latestJobs.forEachIndexed { index, job ->
+                                    JobListRow(
+                                        job = job,
+                                        onClick = { onOpenJob(job.id) }
+                                    )
+                                    if (index < uiState.latestJobs.size - 1) {
+                                        androidx.compose.material3.HorizontalDivider(
+                                            modifier = Modifier.padding(start = 68.dp),
+                                            color = DividerGray,
+                                            thickness = 0.5.dp
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
-                item {
-                    Spacer(modifier = Modifier.height(96.dp)) // Bottom padding for nav
-                }
+                item { Spacer(modifier = Modifier.height(96.dp)) }
             }
         }
     }
@@ -348,45 +373,66 @@ fun SavedJobsScreen(
         }
         else -> {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(CanvasWhite)
             ) {
                 item {
+                    // Fintech page header
                     Column(
-                        modifier = Modifier.padding(
-                            start = InternshipUncleTheme.spacing.medium,
-                            end = InternshipUncleTheme.spacing.medium,
-                            top = InternshipUncleTheme.spacing.large
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.smallMedium)
+                        modifier = Modifier.padding(horizontal = 20.dp).padding(top = 20.dp, bottom = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = "Saved tracking",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = RoyalBlue,
+                            text = "SHORTLIST",
+                            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+                            color = SlateGray,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "Your Shortlist",
-                            style = MaterialTheme.typography.displayLarge
+                            text = "Your saved roles",
+                            style = MaterialTheme.typography.displaySmall,
+                            color = InkBlack,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Use this list to decide which roles deserve deep analysis and customized resumes.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "${uiState.jobs.size} role${if (uiState.jobs.size != 1) "s" else ""} tracked",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = SlateGray
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-                items(uiState.jobs) { job ->
-                    JobListCard(
-                        job = job,
-                        onClick = { onOpenJob(job.id) }
-                    )
-                }
+
                 item {
-                    Spacer(modifier = Modifier.height(96.dp))
+                    Spacer(Modifier.height(16.dp))
+                    // Transaction-list container
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        shape = RoundedCornerShape(18.dp),
+                        color = SurfaceGray,
+                        shadowElevation = 0.dp
+                    ) {
+                        Column {
+                            uiState.jobs.forEachIndexed { index, job ->
+                                JobListRow(
+                                    job = job,
+                                    onClick = { onOpenJob(job.id) }
+                                )
+                                if (index < uiState.jobs.size - 1) {
+                                    androidx.compose.material3.HorizontalDivider(
+                                        modifier = Modifier.padding(start = 68.dp),
+                                        color = DividerGray,
+                                        thickness = 0.5.dp
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
+
+                item { Spacer(modifier = Modifier.height(96.dp)) }
             }
         }
     }
@@ -421,23 +467,27 @@ fun JobDetailScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = InternshipUncleTheme.spacing.medium),
-                verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.large)
+                    .background(CanvasWhite)
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // ── Page header (fintech style)
                 item {
                     Column(
-                        modifier = Modifier.padding(top = InternshipUncleTheme.spacing.large),
-                        verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                        modifier = Modifier.padding(top = 20.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
                             text = safeJob.company.uppercase(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = RoyalBlue,
+                            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+                            color = SlateGray,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = safeJob.title,
-                            style = MaterialTheme.typography.displayLarge
+                            style = MaterialTheme.typography.displaySmall,
+                            color = InkBlack,
+                            fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = buildMetadataLine(
@@ -448,33 +498,27 @@ fun JobDetailScreen(
                                 stipend = safeJob.stipend,
                                 deadline = safeJob.deadline
                             ),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = SlateGray
                         )
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            if (safeJob.isFeatured) {
-                                AccentPill(label = "Featured")
-                            }
-                            if (safeJob.tags.isNotEmpty()) {
-                                ScrollablePillRow(labels = safeJob.tags)
-                            }
+                        if (safeJob.tags.isNotEmpty()) {
+                            Spacer(Modifier.height(8.dp))
+                            ScrollablePillRow(labels = safeJob.tags)
                         }
                     }
                 }
 
+                // ── Action buttons (pill style)
                 item {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        color = PureWhite.copy(alpha = 0.85f),
-                        shadowElevation = 4.dp
+                        shape = RoundedCornerShape(18.dp),
+                        color = SurfaceGray,
+                        shadowElevation = 0.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(InternshipUncleTheme.spacing.mediumLarge),
-                            verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -484,27 +528,19 @@ fun JobDetailScreen(
                                     modifier = Modifier.weight(1f),
                                     onClick = viewModel::toggleSavedState,
                                     enabled = !uiState.isSaving,
-                                    label = if (uiState.isSaving) {
-                                        "Updating..."
-                                    } else if (uiState.isSaved) {
-                                        "Remove saved"
-                                    } else {
-                                        "Save role"
-                                    }
+                                    label = if (uiState.isSaving) "Updating..."
+                                            else if (uiState.isSaved) "Remove saved"
+                                            else "Save role"
                                 )
                                 OutlinedPillButton(
                                     modifier = Modifier.weight(1f),
                                     onClick = { openExternalLink(context, safeJob.applyUrl) },
                                     enabled = !safeJob.applyUrl.isNullOrBlank(),
-                                    label = if (safeJob.applyUrl.isNullOrBlank()) "No generic link" else "Open raw link"
+                                    label = if (safeJob.applyUrl.isNullOrBlank()) "No link" else "Apply"
                                 )
                             }
-                            uiState.saveErrorMessage?.let { message ->
-                                Text(
-                                    text = message,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.error
-                                )
+                            uiState.saveErrorMessage?.let { error ->
+                                Text(text = error, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                             }
                         }
                     }
@@ -512,125 +548,143 @@ fun JobDetailScreen(
 
                 safeJob.description?.let { description ->
                     item {
-                        DetailSectionCard(
-                            title = "Role overview",
-                            body = description
-                        )
+                        DetailSectionCard(title = "Role overview", body = description)
                     }
                 }
 
+                // ── Intelligence section header
                 item {
-                    JobsSectionHeader(
-                        title = "Role Intelligence",
-                        description = "Direct read on requirements and focus points from the JD."
-                    )
+                    FintechSectionHeader(title = "Role intelligence", action = null)
                 }
 
                 uiState.analysis?.let { analysis ->
-                    item {
-                        DetailSectionCard(
-                            title = "Summary",
-                            body = analysis.summary
-                        )
-                    }
-                    item {
-                        DetailSectionCard(
-                            title = "Role reality",
-                            body = analysis.roleReality
-                        )
-                    }
+                    item { DetailSectionCard(title = "Summary", body = analysis.summary) }
+                    item { DetailSectionCard(title = "Role reality", body = analysis.roleReality) }
                     if (analysis.requiredSkills.isNotEmpty()) {
-                        item {
-                            DetailListCard(
-                                title = "Required skills",
-                                values = analysis.requiredSkills
-                            )
-                        }
+                        item { DetailListCard(title = "Required skills", values = analysis.requiredSkills) }
                     }
                     if (analysis.topKeywords.isNotEmpty()) {
-                        item {
-                            DetailListCard(
-                                title = "Top keywords",
-                                values = analysis.topKeywords
-                            )
-                        }
+                        item { DetailListCard(title = "Top keywords", values = analysis.topKeywords) }
                     }
                     if (analysis.likelyInterviewTopics.isNotEmpty()) {
-                        item {
-                            DetailListCard(
-                                title = "Likely interview topics",
-                                values = analysis.likelyInterviewTopics
-                            )
-                        }
+                        item { DetailListCard(title = "Likely interview topics", values = analysis.likelyInterviewTopics) }
                     }
                     analysis.difficulty?.let { difficulty ->
-                        item {
-                            DetailSectionCard(
-                                title = "Difficulty",
-                                body = difficulty.replaceFirstChar { it.titlecase(Locale.US) }
-                            )
-                        }
+                        item { DetailSectionCard(title = "Difficulty", body = difficulty.replaceFirstChar { it.titlecase(Locale.US) }) }
                     }
                 } ?: item {
                     DetailSectionCard(
                         title = "Analysis status",
-                        body = uiState.analysisMessage ?: "Analysis not yet generated for this internship."
+                        body = uiState.analysisMessage ?: "Analysis not yet generated."
                     )
                 }
 
-                // Call to action surface
+                // ── Dark CTA card (fintech dark action block)
                 item {
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),
-                        color = DeepNavy,
-                        shadowElevation = 6.dp
+                        color = CharcoalDark,
+                        shadowElevation = 0.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(InternshipUncleTheme.spacing.mediumLarge),
-                            verticalArrangement = Arrangement.spacedBy(InternshipUncleTheme.spacing.medium)
+                            modifier = Modifier.padding(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Text(
                                 text = "Take Action",
                                 style = MaterialTheme.typography.titleLarge,
-                                color = PureWhite
+                                color = PureWhite,
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Move into prep state with this specific role as your target.",
+                                text = "Move into prep mode with this role as your target.",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = PureWhite.copy(alpha = 0.78f)
+                                color = PureWhite.copy(alpha = 0.7f)
                             )
-                            PillButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onOpenAnalysis(safeJob.id) },
-                                enabled = true,
-                                label = "Deep dive analysis"
-                            )
-                            PillButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onOpenResume(safeJob.id) },
-                                enabled = true,
-                                label = "Target resume to this role"
-                            )
-                            PillButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onOpenInterview(safeJob.id) },
-                                enabled = true,
-                                label = "Mock interview against JD"
-                            )
+                            WhitePillButton(modifier = Modifier.fillMaxWidth(), onClick = { onOpenAnalysis(safeJob.id) }, label = "Deep dive analysis")
+                            WhitePillButton(modifier = Modifier.fillMaxWidth(), onClick = { onOpenResume(safeJob.id) }, label = "Target resume to role")
+                            WhitePillButton(modifier = Modifier.fillMaxWidth(), onClick = { onOpenInterview(safeJob.id) }, label = "Mock interview vs JD")
                         }
                     }
                 }
 
-                item {
-                    Spacer(modifier = Modifier.height(96.dp))
-                }
+                item { Spacer(modifier = Modifier.height(96.dp)) }
             }
         }
     }
 }
 
-// ── Components ──────────────────────────────────────────────────────
+// ── Private Fintech UI Components ────────────────────────────────────
+
+@Composable
+private fun JobsPageHeader(
+    savedJobsCount: Int,
+    onOpenSavedJobs: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            text = "DISCOVER",
+            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+            color = SlateGray,
+            fontWeight = FontWeight.SemiBold
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = "Internships",
+                style = MaterialTheme.typography.displaySmall,
+                color = InkBlack,
+                fontWeight = FontWeight.Bold
+            )
+            OutlinedPillButton(
+                onClick = onOpenSavedJobs,
+                enabled = true,
+                label = if (savedJobsCount > 0) "Saved ($savedJobsCount)" else "Saved"
+            )
+        }
+        Text(
+            text = "Curated roles anchoring your prep workflow.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = SlateGray
+        )
+    }
+}
+
+@Composable
+private fun FintechSectionHeader(title: String, action: String?) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = InkBlack,
+            fontWeight = FontWeight.SemiBold
+        )
+        if (action != null) {
+            Text(
+                text = action,
+                style = MaterialTheme.typography.bodySmall,
+                color = SlateGray,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
 
 @Composable
 private fun JobsStateScreen(
@@ -646,7 +700,7 @@ private fun JobsStateScreen(
         description = description,
         actions = {
             if (showProgress) {
-                CircularProgressIndicator(color = RoyalBlue)
+                CircularProgressIndicator(color = InkBlack)
             }
             if (actionLabel != null && onAction != null) {
                 PillButton(
@@ -662,57 +716,12 @@ private fun JobsStateScreen(
 }
 
 @Composable
-private fun JobsHero(
-    savedJobsCount: Int,
-    onOpenSavedJobs: () -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = InternshipUncleTheme.spacing.medium),
-        shape = RoundedCornerShape(24.dp),
-        color = DeepNavy,
-        shadowElevation = 8.dp
-    ) {
-        Column(
-            modifier = Modifier.padding(28.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "DISCOVER",
-                style = MaterialTheme.typography.labelMedium,
-                color = PureWhite.copy(alpha = 0.6f),
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = "Target roles\nworth the effort.",
-                style = MaterialTheme.typography.displayMedium,
-                color = PureWhite,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Curated internships to anchor your prep workflow.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = PureWhite.copy(alpha = 0.78f)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            PillButton(
-                onClick = onOpenSavedJobs,
-                enabled = true,
-                isLoading = false,
-                label = if (savedJobsCount > 0) "Your Shortlist ($savedJobsCount)" else "Your Shortlist"
-            )
-        }
-    }
-}
-
-@Composable
 private fun JobsSectionHeader(
     title: String,
     description: String
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = InternshipUncleTheme.spacing.medium),
+        modifier = Modifier.padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
@@ -723,7 +732,7 @@ private fun JobsSectionHeader(
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = SlateGray
         )
     }
 }
@@ -735,41 +744,48 @@ private fun FeaturedJobCard(
 ) {
     Surface(
         modifier = Modifier
-            .width(300.dp)
+            .width(280.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.88f),
-        shadowElevation = 5.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+            // Featured badge
+            Surface(
+                color = InkBlack,
+                shape = RoundedCornerShape(8.dp)
             ) {
-                AccentPill(label = "Featured")
+                Text(
+                    text = "Featured",
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = PureWhite,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text(
                     text = job.title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    color = InkBlack
                 )
                 Text(
                     text = job.company,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = CoolGray
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SlateGray
                 )
             }
             Text(
                 text = buildCardSubline(job),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SilverMist
             )
             if (job.tags.isNotEmpty()) {
                 ScrollablePillRow(labels = job.tags.take(3))
@@ -778,41 +794,73 @@ private fun FeaturedJobCard(
     }
 }
 
+// Transaction-list style row (replaces old JobListCard)
 @Composable
-private fun JobListCard(
+private fun JobListRow(
     job: JobCard,
     onClick: () -> Unit
 ) {
-    Surface(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = InternshipUncleTheme.spacing.medium)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(18.dp),
-        color = PureWhite.copy(alpha = 0.82f),
-        shadowElevation = 2.dp
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+        // Circle company monogram
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(InkBlack),
+            contentAlignment = Alignment.Center
         ) {
             Text(
+                text = job.company.take(2).uppercase(),
+                color = PureWhite,
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
                 text = job.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Medium,
+                color = InkBlack,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = job.company,
-                style = MaterialTheme.typography.bodyMedium,
-                color = CoolGray
-            )
-            Text(
-                text = buildCardSubline(job),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SlateGray
             )
-            if (job.tags.isNotEmpty()) {
-                ScrollablePillRow(labels = job.tags.take(4))
+        }
+
+        Column(horizontalAlignment = Alignment.End) {
+            if (job.isFeatured) {
+                Surface(
+                    color = InkBlack.copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(6.dp)
+                ) {
+                    Text(
+                        text = "Featured",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = InkBlack,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            job.deadline?.let { dl ->
+                Text(
+                    text = dl.toReadableDeadline(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = SilverMist
+                )
             }
         }
     }
@@ -826,8 +874,8 @@ private fun DetailSectionCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -841,7 +889,7 @@ private fun DetailSectionCard(
             Text(
                 text = body,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = SlateGray
             )
         }
     }
@@ -855,8 +903,8 @@ private fun DetailListCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = PureWhite.copy(alpha = 0.85f),
-        shadowElevation = 3.dp
+        color = SurfaceGray,
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -875,12 +923,12 @@ private fun DetailListCard(
                     Text(
                         text = "•",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = RoyalBlue
+                        color = InkBlack
                     )
                     Text(
                         text = value,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = SlateGray
                     )
                 }
             }
@@ -888,7 +936,26 @@ private fun DetailListCard(
     }
 }
 
-// ── Generic Sub-composables ──────────────────────────────────────────
+// ── Tags & pill shared components ────────────────────────────────────
+
+@Composable
+private fun WhitePillButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    label: String
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = PureWhite,
+            contentColor = InkBlack
+        )
+    ) {
+        Text(label, fontWeight = FontWeight.SemiBold)
+    }
+}
 
 @Composable
 private fun PillButton(
@@ -904,10 +971,10 @@ private fun PillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = RoyalBlue,
+            containerColor = InkBlack,
             contentColor = PureWhite,
-            disabledContainerColor = RoyalBlue.copy(alpha = 0.4f),
-            disabledContentColor = PureWhite.copy(alpha = 0.6f)
+            disabledContainerColor = InkBlack.copy(alpha = 0.4f),
+            disabledContentColor = SurfaceGray
         )
     ) {
         if (isLoading) {
@@ -931,7 +998,7 @@ private fun OutlinedPillButton(
         modifier = modifier.height(52.dp),
         shape = RoundedCornerShape(26.dp)
     ) {
-        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) RoyalBlue else CoolGray)
+        Text(label, fontWeight = FontWeight.SemiBold, color = if (enabled) InkBlack else CoolGray)
     }
 }
 
@@ -945,35 +1012,17 @@ private fun ScrollablePillRow(
     ) {
         labels.forEach { label ->
             Surface(
-                color = PureWhite.copy(alpha = 0.6f),
+                color = SurfaceGray,
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
                     text = label,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.labelSmall,
-                    color = CoolGray
+                    color = SlateGray
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun AccentPill(
-    label: String
-) {
-    Surface(
-        color = PaleBlue,
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Text(
-            text = label,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = RoyalBlue,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }
 
