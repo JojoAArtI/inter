@@ -31,11 +31,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.internshipuncle.core.design.CoolGray
-import com.internshipuncle.core.design.DeepNavy
-import com.internshipuncle.core.design.InternshipUncleTheme
+import com.internshipuncle.core.design.CanvasWhite
+import com.internshipuncle.core.design.SurfaceGray
+import com.internshipuncle.core.design.InkBlack
+import com.internshipuncle.core.design.SlateGray
+import com.internshipuncle.core.design.DividerGray
 import com.internshipuncle.core.design.PureWhite
-import com.internshipuncle.core.design.RoyalBlue
 import com.internshipuncle.core.model.RepositoryStatus
 import com.internshipuncle.core.ui.PlaceholderScreen
 import com.internshipuncle.data.repository.AuthRepository
@@ -460,7 +461,7 @@ fun SplashScreen(
             "Guardrail" to "AI logic stays server-side. Android handles auth, screen state, and structured data display only."
         ),
         actions = {
-            CircularProgressIndicator(color = RoyalBlue)
+            CircularProgressIndicator(color = InkBlack)
         }
     )
 }
@@ -662,61 +663,46 @@ private fun AuthStageScaffold(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(CanvasWhite)
             .verticalScroll(rememberScrollState())
             .padding(
-                horizontal = InternshipUncleTheme.spacing.medium,
-                vertical = InternshipUncleTheme.spacing.large
+                horizontal = 20.dp,
+                vertical = 24.dp
             ),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Hero header — deep navy card matching dashboard's readiness hero
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = DeepNavy,
-            shadowElevation = 8.dp
+        // Hero header
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(28.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = eyebrow.uppercase(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = PureWhite.copy(alpha = 0.6f),
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.displayMedium,
-                    color = PureWhite,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = PureWhite.copy(alpha = 0.78f)
-                )
-            }
+            Text(
+                text = eyebrow.uppercase(),
+                style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+                color = SlateGray,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.displaySmall,
+                color = InkBlack,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = SlateGray
+            )
         }
 
-        // Form card — frosted glass
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = PureWhite.copy(alpha = 0.88f),
-            shadowElevation = 6.dp
+        // Form container (Flat inputs on canvas)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                content()
-            }
+            content()
         }
 
         if (footerActionLabel != null && onFooterAction != null) {
@@ -726,11 +712,13 @@ private fun AuthStageScaffold(
             ) {
                 Text(
                     text = footerActionLabel,
-                    color = RoyalBlue,
+                    color = SlateGray,
                     fontWeight = FontWeight.SemiBold
                 )
             }
         }
+        
+        Spacer(Modifier.height(48.dp))
     }
 }
 
@@ -751,10 +739,10 @@ private fun PillButton(
             .height(52.dp),
         shape = RoundedCornerShape(26.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = RoyalBlue,
+            containerColor = InkBlack,
             contentColor = PureWhite,
-            disabledContainerColor = RoyalBlue.copy(alpha = 0.4f),
-            disabledContentColor = PureWhite.copy(alpha = 0.6f)
+            disabledContainerColor = InkBlack.copy(alpha = 0.4f),
+            disabledContentColor = SurfaceGray
         )
     ) {
         LoadingLabel(isLoading = isLoading, idleText = label)
@@ -779,7 +767,7 @@ private fun AppTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(label) },
+        label = { Text(label, color = SlateGray) },
         enabled = enabled,
         singleLine = singleLine,
         minLines = if (singleLine) 1 else 3,
@@ -792,10 +780,10 @@ private fun AppTextField(
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = RoyalBlue,
-            unfocusedBorderColor = CoolGray.copy(alpha = 0.4f),
-            focusedLabelColor = RoyalBlue,
-            cursorColor = RoyalBlue
+            focusedBorderColor = InkBlack,
+            unfocusedBorderColor = DividerGray,
+            focusedLabelColor = InkBlack,
+            cursorColor = InkBlack
         ),
         supportingText = {
             supportingText?.takeIf(String::isNotBlank)?.let { text ->
@@ -817,7 +805,7 @@ private fun AuthMessageBanner(
         color = if (isError) {
             MaterialTheme.colorScheme.errorContainer
         } else {
-            MaterialTheme.colorScheme.surfaceVariant
+            SurfaceGray
         },
         shape = RoundedCornerShape(14.dp)
     ) {
@@ -830,7 +818,7 @@ private fun AuthMessageBanner(
             color = if (isError) {
                 MaterialTheme.colorScheme.onErrorContainer
             } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
+                InkBlack
             }
         )
     }
@@ -842,7 +830,7 @@ private fun ReadOnlyProfileRow(
     value: String
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = SurfaceGray,
         shape = RoundedCornerShape(14.dp)
     ) {
         Column(
@@ -853,13 +841,14 @@ private fun ReadOnlyProfileRow(
         ) {
             Text(
                 text = label.uppercase(),
-                style = MaterialTheme.typography.labelMedium,
-                color = RoyalBlue,
+                style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.sp),
+                color = SlateGray,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = value,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = InkBlack
             )
         }
     }
