@@ -1159,56 +1159,51 @@ private fun QuestionCard(
     question: MockInterviewQuestionProgress,
     currentIndex: Int
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = SurfaceGray,
-        shadowElevation = 0.dp
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "QUESTION ${currentIndex + 1}",
-                style = MaterialTheme.typography.labelMedium,
-                color = InkBlack,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = question.question,
-                style = MaterialTheme.typography.titleLarge
-            )
-            question.category?.let { category ->
-                Surface(
-                    color = SurfaceGray,
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text(
-                        text = category,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = SlateGray
-                    )
-                }
-            }
-            if (question.expectedPoints.isNotEmpty()) {
+        Text(
+            text = "QUESTION ${currentIndex + 1}",
+            style = MaterialTheme.typography.labelMedium,
+            color = SlateGray,
+            fontWeight = FontWeight.SemiBold
+        )
+        Text(
+            text = question.question,
+            style = MaterialTheme.typography.titleLarge
+        )
+        question.category?.let { category ->
+            Surface(
+                color = SurfaceGray,
+                shape = RoundedCornerShape(10.dp)
+            ) {
                 Text(
-                    text = "Expected concepts",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = SlateGray
+                    text = category,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = InkBlack
                 )
-                question.expectedPoints.forEach { point ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("•", color = InkBlack)
-                        Text(point, style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
-            question.answer?.let {
-                SavedAnswerCard(answer = it)
             }
         }
+        if (question.expectedPoints.isNotEmpty()) {
+            Text(
+                text = "Expected concepts",
+                style = MaterialTheme.typography.labelMedium,
+                color = SlateGray
+            )
+            question.expectedPoints.forEach { point ->
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("•", color = InkBlack)
+                    Text(point, style = MaterialTheme.typography.bodyLarge, color = SlateGray)
+                }
+            }
+        }
+        question.answer?.let {
+            SavedAnswerCard(answer = it)
+        }
+        Spacer(Modifier.height(8.dp))
+        HorizontalDivider(color = DividerGray)
     }
 }
 
@@ -1223,52 +1218,46 @@ private fun AnswerCard(
     onNext: () -> Unit,
     showNext: Boolean
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = SurfaceGray,
-        shadowElevation = 0.dp
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Text("Your verbal response", style = MaterialTheme.typography.titleMedium)
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = answer,
+            onValueChange = onAnswerChange,
+            label = { Text("What would you say?") },
+            minLines = 4,
+            maxLines = 8,
+            shape = RoundedCornerShape(16.dp)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Your verbal response", style = MaterialTheme.typography.titleMedium)
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = answer,
-                onValueChange = onAnswerChange,
-                label = { Text("What would you say?") },
-                minLines = 4,
-                maxLines = 8,
-                shape = RoundedCornerShape(16.dp)
+            OutlinedPillButton(
+                modifier = Modifier.weight(1f),
+                onClick = onSkip,
+                enabled = !isSubmitting,
+                label = "Skip"
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                OutlinedPillButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onSkip,
-                    enabled = !isSubmitting,
-                    label = "Skip"
-                )
-                PillButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onSubmit,
-                    enabled = canSubmit,
-                    isLoading = isSubmitting,
-                    label = "Submit"
-                )
-            }
-            if (showNext) {
-                PillButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onNext,
-                    label = "Proceed to next"
-                )
-            }
+            PillButton(
+                modifier = Modifier.weight(1f),
+                onClick = onSubmit,
+                enabled = canSubmit,
+                isLoading = isSubmitting,
+                label = "Submit"
+            )
         }
+        if (showNext) {
+            PillButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onNext,
+                label = "Proceed to next"
+            )
+        }
+        HorizontalDivider(color = DividerGray)
     }
 }
 
@@ -1276,47 +1265,41 @@ private fun AnswerCard(
 private fun EvaluationCard(
     evaluation: MockInterviewAnswerEvaluation
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        color = CharcoalDark,
-        shadowElevation = 0.dp
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text("Evaluation Feedback", style = MaterialTheme.typography.titleLarge, color = PureWhite)
-            Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = "${evaluation.score}",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = SurfaceLight
-                )
-                Text("/100", style = MaterialTheme.typography.titleMedium, color = SurfaceGray, modifier = Modifier.padding(bottom = 6.dp))
-            }
-
-            evaluation.feedback.strengths.takeIf { it.isNotEmpty() }?.let {
-                FeedbackListCard(title = "Strengths", values = it, isDark = true)
-            }
-            evaluation.feedback.weaknesses.takeIf { it.isNotEmpty() }?.let {
-                FeedbackListCard(title = "Gaps", values = it, isDark = true)
-            }
-            evaluation.feedback.missingPoints.takeIf { it.isNotEmpty() }?.let {
-                FeedbackListCard(title = "Missing expected points", values = it, isDark = true)
-            }
-            evaluation.feedback.followUp?.let { followUp ->
-                Text(
-                    text = "Follow-up: $followUp",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = SurfaceLight.copy(alpha = 0.9f)
-                )
-            }
-            evaluation.improvedAnswer?.let { improved ->
-                ImprovedAnswerCard(text = improved)
-            }
+        Text("Evaluation Feedback", style = MaterialTheme.typography.titleLarge, color = InkBlack)
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = "${evaluation.score}",
+                style = MaterialTheme.typography.displayMedium,
+                fontWeight = FontWeight.Bold,
+                color = InkBlack
+            )
+            Text("/100", style = MaterialTheme.typography.titleMedium, color = SlateGray, modifier = Modifier.padding(bottom = 6.dp))
         }
+
+        evaluation.feedback.strengths.takeIf { it.isNotEmpty() }?.let {
+            FeedbackListCard(title = "Strengths", values = it, isDark = false)
+        }
+        evaluation.feedback.weaknesses.takeIf { it.isNotEmpty() }?.let {
+            FeedbackListCard(title = "Gaps", values = it, isDark = false)
+        }
+        evaluation.feedback.missingPoints.takeIf { it.isNotEmpty() }?.let {
+            FeedbackListCard(title = "Missing expected points", values = it, isDark = false)
+        }
+        evaluation.feedback.followUp?.let { followUp ->
+            Text(
+                text = "Follow-up: $followUp",
+                style = MaterialTheme.typography.bodyMedium,
+                color = SlateGray
+            )
+        }
+        evaluation.improvedAnswer?.let { improved ->
+            ImprovedAnswerCard(text = improved)
+        }
+        HorizontalDivider(color = DividerGray)
     }
 }
 
