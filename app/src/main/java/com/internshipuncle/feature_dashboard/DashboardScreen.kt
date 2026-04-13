@@ -40,6 +40,8 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.WorkOutline
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -113,7 +115,9 @@ data class DashboardUiState(
     val isConfigured: Boolean = true,
     val isSigningOut: Boolean = false,
     val signOutError: String? = null,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val userName: String = "Internship Uncle",
+    val userInitials: String = "IU"
 ) {
     val hasContent: Boolean
         get() = (readinessScore ?: 0) > 0 ||
@@ -141,11 +145,15 @@ class DashboardViewModel @Inject constructor(
 
     val uiState: StateFlow<DashboardUiState> = combine(
         dashboardRepository.snapshot(),
+        authRepository.session(),
         signOutState
-    ) { snapshotResult, signOutUiState ->
+    ) { snapshotResult, session, signOutUiState ->
+        val profile = session.profile
         snapshotResult.toDashboardUiState().copy(
             isSigningOut = signOutUiState.isSigningOut,
-            signOutError = signOutUiState.signOutError
+            signOutError = signOutUiState.signOutError,
+            userName = profile?.name ?: "Internship Uncle",
+            userInitials = profile?.name?.toInitials() ?: "IU"
         )
     }.stateIn(
         scope = viewModelScope,
@@ -241,8 +249,12 @@ private fun DashboardContent(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        // ── 1. Welcome header (avatar + name + icons)
-        WelcomeHeader(onRefresh = onRefresh, onSignOut = onSignOut)
+        // ── 1. Welcome header (avatar + name + dropdown)
+        WelcomeHeader(
+            userName = uiState.userName,
+            userInitials = uiState.userInitials,
+            onSignOut = onSignOut
+        )
 
         Spacer(Modifier.height(24.dp))
 
@@ -326,7 +338,13 @@ private fun DashboardContent(
 // Right: notification bell + settings gear (outlined circles)
 
 @Composable
-private fun WelcomeHeader(onRefresh: () -> Unit, onSignOut: () -> Unit) {
+private fun WelcomeHeader(
+    userName: String,
+    userInitials: String,
+    onSignOut: () -> Unit
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -335,8 +353,13 @@ private fun WelcomeHeader(onRefresh: () -> Unit, onSignOut: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment     = Alignment.CenterVertically
     ) {
-        // Avatar + greeting
+        // Avatar + greeting (clickable for dropdown)
         Row(
+            modifier = Modifier.clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { isExpanded = true }
+            ),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment     = Alignment.CenterVertically
         ) {
@@ -349,7 +372,7 @@ private fun WelcomeHeader(onRefresh: () -> Unit, onSignOut: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text       = "IU",           // Internship Uncle initials
+                    text       = userInitials,
                     color      = PureWhite,
                     fontSize   = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -364,18 +387,33 @@ private fun WelcomeHeader(onRefresh: () -> Unit, onSignOut: () -> Unit) {
                     color = SlateGray
                 )
                 Text(
-                    text       = "Internship Uncle",
+                    text       = userName,
                     style      = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color      = InkBlack
                 )
             }
-        }
 
-        // Right action icons
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            HeaderIconButton(icon = Icons.Outlined.Star, onClick = onSignOut)
-            HeaderIconButton(icon = Icons.Outlined.Notifications, onClick = onRefresh)
+            // Dropdown Menu Pop-out
+            DropdownMenu(
+                expanded = isExpanded,
+                onDismissRequest = { isExpanded = false },
+                modifier = Modifier.background(PureWhite, RoundedCornerShape(12.dp))
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Settings", style = MaterialTheme.typography.bodyMedium) },
+                    onClick = { isExpanded = false },
+                    leadingIcon = { Icon(Icons.Outlined.Settings, null, Modifier.size(18.dp)) }
+                )
+                DropdownMenuItem(
+                    text = { Text("Log Out", color = RedNegative, style = MaterialTheme.typography.bodyMedium) },
+                    onClick = {
+                        isExpanded = false
+                        onSignOut()
+                    },
+                    leadingIcon = { Icon(Icons.Outlined.Refresh, null, Modifier.size(18.dp), tint = RedNegative) }
+                )
+            }
         }
     }
 }
@@ -518,9 +556,9 @@ private fun PrimaryActionRow(
         )
         PrimaryCircleAction(
             icon    = Icons.Outlined.MoreHoriz,
-            label   = if (isSigningOut) "..." else "More",
+            label   = "More",
             filled  = false,
-            onClick = onSignOut
+            onClick = { /* Could open another menu if needed */ }
         )
     }
 }
@@ -1261,4 +1299,14 @@ private fun RepositoryStatus.toSignOutMessage(): String? {
         RepositoryStatus.BackendNotReady  -> "The auth backend is not fully ready yet."
         is RepositoryStatus.Failure       -> message
     }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────
+
+private fun String.toInitials(): String {
+    return this.split(" ")
+        .filter { it.isNotBlank() }
+        .take(2)
+        .mapNotNull { it.firstOrNull()?.uppercase() }
+        .joinToString("")
 }

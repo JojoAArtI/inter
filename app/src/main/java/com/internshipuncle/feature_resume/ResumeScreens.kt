@@ -1020,21 +1020,42 @@ private fun ResumeSummaryCard(
         modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = resume.fileName ?: "Untitled resume",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = InkBlack
-        )
-        Text(
-            text = "Latest score: ${resume.latestScore?.toString() ?: "pending"}",
-            style = MaterialTheme.typography.bodyLarge,
-            color = SlateGray
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = resume.fileName ?: "Untitled resume",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = InkBlack,
+                modifier = Modifier.weight(1f)
+            )
+            
+            if (!resume.isParsed) {
+                Text(
+                    text = "Awaiting parsing",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+        
+        if (resume.isParsed) {
+            Text(
+                text = "Latest score: ${resume.latestScore?.toString() ?: "pending"}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = SlateGray
+            )
+        }
+        
         PillButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = onRoast,
-            label = "Roast this resume"
+            label = if (resume.isParsed) "Roast this resume" else "Cannot roast (parsing failed)",
+            enabled = resume.isParsed
         )
         HorizontalDivider(color = DividerGray)
     }
