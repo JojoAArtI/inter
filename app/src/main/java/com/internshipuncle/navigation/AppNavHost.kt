@@ -172,29 +172,16 @@ fun InternshipUncleApp() {
                     onOpenSavedJobs = { navController.navigate(AppDestination.SavedJobs.route) }
                 )
             }
-            composable(AppDestination.Analyze.route) {
-                PlaceholderScreen(
-                    eyebrow = "Analyze",
-                    title = "Pick a role to analyze",
-                    description = "Job analysis is always tied to a target internship. Open the jobs board, choose a role, and jump into the JD reality check from there.",
-                    sections = listOf(
-                        "What you get" to "Plain-English summary, role reality, skill gaps, keywords, and interview topics.",
-                        "Best next move" to "Open a job, then use the analysis CTA from job detail."
-                    ),
-                    actions = {
-                        Button(onClick = {
-                            navController.navigate(AppDestination.Jobs.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }) {
-                            Text("Open jobs")
-                        }
-                    }
-                )
+            composable(
+                route = AppDestination.Analyze.route,
+                arguments = listOf(navArgument("targetJobId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                })
+            ) {
+                val viewModel: AnalysisViewModel = hiltViewModel()
+                AnalysisScreen(viewModel = viewModel)
             }
             composable(AppDestination.SavedJobs.route) {
                 val viewModel: SavedJobsViewModel = hiltViewModel()
@@ -211,18 +198,12 @@ fun InternshipUncleApp() {
                 val viewModel: JobDetailViewModel = hiltViewModel()
                 JobDetailScreen(
                     viewModel = viewModel,
-                    onOpenAnalysis = { jobId -> navController.navigate(AppDestination.Analysis.createRoute(jobId)) },
+                    onOpenAnalysis = { jobId -> navController.navigate(AppDestination.Analyze.createRoute(jobId)) },
                     onOpenResume = { jobId -> navController.navigate(AppDestination.ResumeUpload.createRoute(jobId)) },
                     onOpenInterview = { jobId -> navController.navigate(AppDestination.MockInterview.createRoute(jobId)) }
                 )
             }
-            composable(
-                route = AppDestination.Analysis.route,
-                arguments = listOf(navArgument("jobId") { type = NavType.StringType })
-            ) {
-                val viewModel: AnalysisViewModel = hiltViewModel()
-                AnalysisScreen(viewModel = viewModel)
-            }
+
             composable(
                 route = AppDestination.ResumeRoast.route,
                 arguments = listOf(
