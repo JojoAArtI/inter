@@ -58,6 +58,11 @@ import com.internshipuncle.core.design.CoolGray
 import com.internshipuncle.core.design.InternshipUncleTheme
 import com.internshipuncle.core.design.PureWhite
 import com.internshipuncle.core.design.InkBlack
+import com.internshipuncle.core.design.CharcoalDark
+import com.internshipuncle.core.design.SurfaceLight
+import com.internshipuncle.core.ui.PlaceholderScreen
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.LinearProgressIndicator
 import com.internshipuncle.core.model.QueryResult
 import com.internshipuncle.data.repository.InterviewRepository
 import com.internshipuncle.data.repository.JobsRepository
@@ -805,7 +810,7 @@ fun MockInterviewSetupScreen(
                 }
                 
                 uiState.recentSessions.take(3).forEach { session ->
-                    RecentSessionRow(session = session)
+                    RecentSessionCard(session = session)
                 }
             }
         }
