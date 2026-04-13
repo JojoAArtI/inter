@@ -613,13 +613,13 @@ private fun AppTextField(
 @Composable
 fun MockInterviewSetupScreen(
     viewModel: MockInterviewSetupViewModel = hiltViewModel(),
-    onSessionCreated: (String) -> Unit
+    onOpenSession: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.createdSessionId) {
         uiState.createdSessionId?.let { id ->
-            onSessionCreated(id)
+            onOpenSession(id)
             viewModel.onSessionHandled()
         }
     }
@@ -842,17 +842,12 @@ private fun ParameterQuickSelector(
                             text = option.replaceFirstChar(Char::uppercase).replace('_', ' '),
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
                             style = MaterialTheme.typography.bodySmall,
-                Spacer(modifier = Modifier.height(InternshipUncleTheme.spacing.medium))
-                SectionTitle(
-                    title = "Recent history",
-                    subtitle = "Jump back into past results."
-                )
-                uiState.recentSessions.take(3).forEach { session ->
-                    RecentSessionCard(session = session)
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) PureWhite else InkBlack
+                        )
+                    }
                 }
             }
-
-            Spacer(modifier = Modifier.height(96.dp))
         }
     }
 }
